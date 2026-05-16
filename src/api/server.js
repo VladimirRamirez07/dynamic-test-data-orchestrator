@@ -9,6 +9,13 @@ require('dotenv').config();
 const app = express();
 app.use(express.json());
 
+const path = require('path');
+
+// Dashboard
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 // Swagger UI
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
