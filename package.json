@@ -1,0 +1,34 @@
+{
+  "name": "dynamic-test-data-orchestrator",
+  "version": "1.0.0",
+  "description": "Service that dynamically seeds, cleans and prepares databases before each test suite — SQL/NoSQL support, HTTP injection, zero false positives",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladimirRamirez07/dynamic-test-data-orchestrator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/VladimirRamirez07/dynamic-test-data-orchestrator/issues"
+  },
+  "homepage": "https://github.com/VladimirRamirez07/dynamic-test-data-orchestrator#readme",
+  "dependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.6"
+  }
+}
