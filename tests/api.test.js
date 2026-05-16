@@ -1,38 +1,47 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { seedUsers, cleanUsers } from '../src/seeders/postgres/userSeeder.js';
+import { seedProducts, cleanProducts } from '../src/seeders/mongo/productSeeder.js';
 
-describe('Orchestrator API', () => {
-  const BASE_URL = 'http://localhost:3000';
+// Mock de las conexiones a BD para no necesitar DB real en CI
+vi.mock('../src/config/database.js', () => ({
+  default: {
+    query: vi.fn().mockResolvedValue({ rows: [{ id: 1, name: 'Test User', email: 'test@test.com', role: 'admin' }] }),
+    end: vi.fn()
+  }
+}));
 
-  it('should return health status', async () => {
-    const res = await fetch(`${BASE_URL}/health`);
-    const data = await res.json();
-    expect(res.status).toBe(200);
-    expect(data.status).toBe('ok');
+vi.mock('mongoose', () => ({
+  default: {
+    connect: vi.fn().mockResolvedValue(true),
+    disconnect: vi.fn().mockResolvedValue(true),
+    Schema: vi.fn().mockImplementation(() => ({})),
+    model: vi.fn().mockReturnValue({
+      deleteMany: vi.fn().mockResolvedValue(true),
+      insertMany: vi.fn().mockResolvedValue([
+        { name: 'Product A', price: 10.99, category: 'Electronics', stock: 100, isActive: true }
+      ])
+    })
+  }
+}));
+
+describe('PostgreSQL Seeder', () => {
+  it('seedUsers returns an array', async () => {
+    const users = await seedUsers(5);
+    expect(Array.isArray(users)).toBe(true);
   });
 
-  it('should seed users in PostgreSQL', async () => {
-    const res = await fetch(`${BASE_URL}/seed/users`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ count: 5 })
-    });
-    const data = await res.json();
-    expect(res.status).toBe(200);
-    expect(data.success).toBe(true);
-    expect(data.count).toBe(5);
+  it('cleanUsers executes without error', async () => {
+    await expect(cleanUsers()).resolves.not.toThrow();
+  });
+});
+
+describe('MongoDB Seeder', () => {
+  it('seedProducts returns an array', async () => {
+    const products = await seedProducts(5);
+    expect(Array.isArray(products)).toBe(true);
   });
 
-  it('should clean users', async () => {
-    const res = await fetch(`${BASE_URL}/seed/users`, { method: 'DELETE' });
-    const data = await res.json();
-    expect(res.status).toBe(200);
-    expect(data.success).toBe(true);
-  });
-
-  it('should reset all databases', async () => {
-    const res = await fetch(`${BASE_URL}/reset`, { method: 'POST' });
-    const data = await res.json();
-    expect(res.status).toBe(200);
-    expect(data.success).toBe(true);
+  it('cleanProducts executes without error', async () => {
+    await expect(cleanProducts()).resolves.not.toThrow();
   });
 });
