@@ -50,6 +50,7 @@ def seed_users(count=10):
 def clean_users():
     conn = get_connection()
     cursor = conn.cursor()
+    create_users_table(cursor)  # Crea la tabla si no existe
     cursor.execute("DELETE FROM users")
     conn.commit()
     cursor.close()
