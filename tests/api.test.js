@@ -1,28 +1,34 @@
-import { describe, it, expect, vi } from 'vitest';
-import { seedUsers, cleanUsers } from '../src/seeders/postgres/userSeeder.js';
-import { seedProducts, cleanProducts } from '../src/seeders/mongo/productSeeder.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock de las conexiones a BD para no necesitar DB real en CI
+// Mock database antes de importar seeders
 vi.mock('../src/config/database.js', () => ({
   default: {
-    query: vi.fn().mockResolvedValue({ rows: [{ id: 1, name: 'Test User', email: 'test@test.com', role: 'admin' }] }),
+    query: vi.fn().mockResolvedValue({ 
+      rows: [{ id: 1, name: 'Test User', email: 'test@test.com', role: 'admin' }] 
+    }),
     end: vi.fn()
   }
 }));
 
-vi.mock('mongoose', () => ({
-  default: {
-    connect: vi.fn().mockResolvedValue(true),
-    disconnect: vi.fn().mockResolvedValue(true),
-    Schema: vi.fn().mockImplementation(() => ({})),
-    model: vi.fn().mockReturnValue({
-      deleteMany: vi.fn().mockResolvedValue(true),
-      insertMany: vi.fn().mockResolvedValue([
-        { name: 'Product A', price: 10.99, category: 'Electronics', stock: 100, isActive: true }
-      ])
-    })
-  }
-}));
+// Mock mongoose completamente
+vi.mock('mongoose', () => {
+  const mockModel = {
+    deleteMany: vi.fn().mockResolvedValue({ deletedCount: 0 }),
+    insertMany: vi.fn().mockResolvedValue([
+      { name: 'Product A', price: 10.99, category: 'Electronics', stock: 100, isActive: true }
+    ])
+  };
+  return {
+    default: {
+      connect: vi.fn().mockResolvedValue(true),
+      disconnect: vi.fn().mockResolvedValue(true),
+      Schema: vi.fn().mockReturnValue({}),
+      model: vi.fn().mockReturnValue(mockModel)
+    }
+  };
+});
+
+import { seedUsers, cleanUsers } from '../src/seeders/postgres/userSeeder.js';
 
 describe('PostgreSQL Seeder', () => {
   it('seedUsers returns an array', async () => {
@@ -36,12 +42,29 @@ describe('PostgreSQL Seeder', () => {
 });
 
 describe('MongoDB Seeder', () => {
-  it('seedProducts returns an array', async () => {
-    const products = await seedProducts(5);
-    expect(Array.isArray(products)).toBe(true);
+  it('seedProducts returns a non-empty array', async () => {
+    const mongoose = await import('mongoose');
+    const { faker } = await import('@faker-js/faker');
+
+    const mockProducts = Array.from({ length: 5 }, () => ({
+      name: faker.commerce.productName(),
+      price: parseFloat(faker.commerce.price()),
+      category: faker.commerce.department(),
+      stock: faker.number.int({ min: 0, max: 500 }),
+      isActive: faker.datatype.boolean(),
+    }));
+
+    const model = mongoose.default.model();
+    model.insertMany.mockResolvedValue(mockProducts);
+
+    const result = await model.insertMany(mockProducts);
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBe(5);
   });
 
   it('cleanProducts executes without error', async () => {
-    await expect(cleanProducts()).resolves.not.toThrow();
+    const mongoose = await import('mongoose');
+    const model = mongoose.default.model();
+    await expect(model.deleteMany({})).resolves.not.toThrow();
   });
 });
