@@ -7,9 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  test-node:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres:15
@@ -24,7 +23,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
       mongo:
         image: mongo:6
         ports:
@@ -52,5 +50,52 @@ jobs:
           echo "MONGO_URI=mongodb://localhost:27017/testdb" >> .env
           echo "API_PORT=3000" >> .env
 
-      - name: Run tests
+      - name: Run Node.js tests
         run: npm test
+
+  test-python:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: pip install -r python/requirements.txt
+
+      - name: Create .env
+        run: |
+          echo "PG_HOST=localhost" >> .env
+          echo "PG_PORT=5432" >> .env
+          echo "PG_USER=testuser" >> .env
+          echo "PG_PASSWORD=testpass" >> .env
+          echo "PG_DATABASE=testdb" >> .env
+          echo "MONGO_URI=mongodb://localhost:27017/testdb" >> .env
+          echo "API_PORT=3000" >> .env
+
+      - name: Run Python seeders
+        run: |
+          cd python
+          python run_all.py
