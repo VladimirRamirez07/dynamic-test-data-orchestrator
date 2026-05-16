@@ -7,7 +7,10 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "seed:postgres": "node src/seeders/postgres/run.js",
+  "seed:mongo": "node src/seeders/mongo/run.js",
+  "start": "node src/api/server.js",
+  "test": "vitest"
   },
   "repository": {
     "type": "git",
