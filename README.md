@@ -3,15 +3,22 @@
 > Service that dynamically seeds, cleans and prepares databases before each test suite — SQL/NoSQL support, HTTP injection, zero false positives.
 
 ![CI](https://github.com/VladimirRamirez07/dynamic-test-data-orchestrator/actions/workflows/ci.yml/badge.svg)
-![Node](https://img.shields.io/badge/Node.js-20-green)
-![Python](https://img.shields.io/badge/Python-3.11-blue)
+![Node](https://img.shields.io/badge/Node.js-20-339933?logo=nodedotjs&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+![Express](https://img.shields.io/badge/Express-4.x-000000?logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?logo=postgresql&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-6-47A248?logo=mongodb&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![Faker](https://img.shields.io/badge/Faker.js-latest-FF6B6B?logo=javascript&logoColor=white)
+![Swagger](https://img.shields.io/badge/Swagger-UI-85EA2D?logo=swagger&logoColor=black)
+![Vitest](https://img.shields.io/badge/Vitest-4.x-6E9F18?logo=vitest&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
 ## 🖥️ Dashboard Preview
 
-![Dashboard](docs/dashboard-preview.png)
+![Dashboard](./docs/dashboard-preview.png)
 
 ---
 
