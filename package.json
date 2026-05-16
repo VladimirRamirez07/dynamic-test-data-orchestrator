@@ -7,10 +7,10 @@
     "test": "tests"
   },
   "scripts": {
-  "seed:postgres": "node src/seeders/postgres/run.js",
-  "seed:mongo": "node src/seeders/mongo/run.js",
-  "start": "node src/api/server.js",
-  "test": "vitest"
+    "seed:postgres": "node src/seeders/postgres/run.js",
+    "seed:mongo": "node src/seeders/mongo/run.js",
+    "start": "node src/api/server.js",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -29,7 +29,9 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongoose": "^9.6.2",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "vitest": "^4.1.6"
