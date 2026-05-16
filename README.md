@@ -3,8 +3,15 @@
 > Service that dynamically seeds, cleans and prepares databases before each test suite — SQL/NoSQL support, HTTP injection, zero false positives.
 
 ![CI](https://github.com/VladimirRamirez07/dynamic-test-data-orchestrator/actions/workflows/ci.yml/badge.svg)
-![Node](https://img.shields.io/badge/Node.js-18-green)
+![Node](https://img.shields.io/badge/Node.js-20-green)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![License](https://img.shields.io/badge/license-MIT-blue)
+
+---
+
+## 🖥️ Dashboard Preview
+
+![Dashboard](docs/dashboard-preview.png)
 
 ---
 
@@ -23,19 +30,22 @@ This orchestrator provides a REST API that **cleans, generates and prepares data
 | Technology | Purpose |
 |------------|---------|
 | Node.js + Express | REST API server |
+| Python 3.11 | Alternative seeders |
 | PostgreSQL + pg | Relational data seeding |
 | MongoDB + Mongoose | NoSQL data seeding |
-| Faker.js | Realistic fake data generation |
+| Faker.js + Faker (Python) | Realistic fake data generation |
 | Docker + Docker Compose | Containerized databases |
+| Swagger UI | Interactive API documentation |
 | Vitest | API testing |
-| GitHub Actions | CI/CD pipeline |
+| GitHub Actions | CI/CD pipeline (Node + Python jobs) |
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
+- Python 3.11+
 - Docker Desktop
 
 ### 1. Clone and install
@@ -57,8 +67,16 @@ cp .env.example .env
 
 ### 4. Start the API
 ```bash
-npm start
+node src/api/server.js
 ```
+
+### 5. Open the dashboard
+
+http://localhost:3000
+
+### 6. Open Swagger docs
+
+http://localhost:3000/docs
 
 ---
 
@@ -87,10 +105,19 @@ curl -X POST http://localhost:3000/reset
 
 ---
 
+## 🐍 Python Seeders
+
+```bash
+cd python
+pip install -r requirements.txt
+python run_all.py
+```
+
+---
+
 ## 🧪 How it works in a test suite
 
 ```javascript
-// Before your test suite runs:
 beforeAll(async () => {
   await fetch('http://localhost:3000/reset', { method: 'POST' });
   await fetch('http://localhost:3000/seed/users', {
@@ -108,18 +135,33 @@ beforeAll(async () => {
 ```
 src/
 ├── api/
-│   └── server.js          # Express REST API
+│   ├── server.js            # Express REST API
+│   └── dashboard.html       # Visual dashboard UI
 ├── config/
-│   └── database.js        # PostgreSQL connection
+│   ├── database.js          # PostgreSQL connection
+│   └── swagger.js           # Swagger configuration
 ├── seeders/
 │   ├── postgres/
-│   │   ├── userSeeder.js  # User seeding logic
-│   │   └── run.js         # Standalone runner
+│   │   ├── userSeeder.js    # User seeding logic
+│   │   └── run.js           # Standalone runner
 │   └── mongo/
 │       ├── productSeeder.js # Product seeding logic
 │       └── run.js           # Standalone runner
+python/
+├── config/
+│   └── settings.py          # Python environment config
+├── seeders/
+│   ├── user_seeder.py       # PostgreSQL seeder (Python)
+│   └── product_seeder.py    # MongoDB seeder (Python)
+├── run_all.py               # Run all Python seeders
+└── requirements.txt         # Python dependencies
 tests/
-└── api.test.js            # API integration tests
+└── api.test.js              # Vitest unit tests
+docs/
+└── dashboard-preview.png    # Dashboard screenshot
+.github/
+└── workflows/
+└── ci.yml               # GitHub Actions (Node + Python)
 ```
 ---
 
@@ -130,3 +172,4 @@ Pull requests are welcome. For major changes, please open an issue first.
 ## 📄 License
 
 MIT
+
