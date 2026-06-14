@@ -28,7 +28,7 @@ One of QA's biggest challenges is **data corruption and inconsistency between te
 
 ## ✅ Solution
 
-This orchestrator provides a REST API that **cleans, generates and prepares databases dynamically** before each test suite using Data Seeding with Faker.js. Tests become 100% deterministic.
+This orchestrator provides a REST API that **cleans, generates and prepares databases dynamically** before each test suite using Data Seeding with Faker.js. Tests become 100% deterministic
 
 ---
 
